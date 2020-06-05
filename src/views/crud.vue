@@ -106,6 +106,8 @@
 </template>
 
 <script>
+import $ from 'jquery';
+
 export default {
   name: "",
   props: {},
@@ -206,6 +208,15 @@ export default {
   },
   mounted: function() {
     //元素已掛載， $el 被建立。
+     $.ajax({
+                url: "http://127.0.0.1:880/api/list.php",
+                type: 'GET',
+                data: {},
+                success: (result)=>{
+                  console.log(result)
+                    alert("ok")
+                }
+            })
   },
   beforeUpdate: function() {
     //當資料變化時被呼叫，還不會描繪 View。
