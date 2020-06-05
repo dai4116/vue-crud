@@ -1,0 +1,227 @@
+<template>
+<div>
+  <div class="container">
+        <h3 class="text-center mt-3 mb-3">Address book</h3>
+        <button type="button" class="btn btn-primary btn-sm mb-3" @click="addBtn()" data-toggle="modal"
+            data-target="#addModal">Add
+            contact</button>
+        <!-- add contact彈窗-->
+        <div class="modal fade" id="addModal" tabindex="-1" role="dialog"
+            aria-labelledby="addModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addModalTitle">Add contact</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="addInputName">Name</label>
+                                <input v-model="addItems.data.name" type="text" value="" class="form-control" aria-describedby="nameHelp" placeholder="Enter Name" >
+                            </div>
+                            <div class="form-group">
+                                <label for="addInputTel">Tel</label>
+                                <input v-model="addItems.data.tel" type="text" value="" class="form-control" placeholder="Enter Tel">
+                            </div>
+                            <div class="form-group">
+                                <label for="addInputEmail">Email</label>
+                                <input v-model="addItems.data.email" type="text" value="" class="form-control" placeholder="Enter email">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" data-dismiss="modal" @click="submitBtn">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="table table-bordered text-center">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Tel</th>
+                    <th scope="col">E-mail</th>
+                    <th scope="col">Edit</th>
+                </tr>
+            </thead>
+            <tbody id="contacts">
+                <tr v-for="(item, i) in items" :key="i"> <!-- key是陣列索引位置 -->
+                    <th>{{ item.id }}</th>
+                    <td class="name">{{ item.name }}</td>
+                    <td class="tel">{{ item.tel }}</td>
+                    <td class="email">{{ item.email }}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm mr-2" data-toggle="modal"
+                            data-target="#editModal" @click="editBtn(item.id)">Edit</button>
+                        <button type="button" class="btn btn-primary btn-sm delete" @click="deleteBtn(i)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- 編輯彈窗 -->
+                <div class="modal fade" id="editModal" tabindex="-1" role="dialog"
+                    aria-labelledby="editModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalCenterTitle">Add contact</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="EditInputName">Name</label>
+                                        <input v-model="editItems.data.name" type="text" value="" class="form-control"
+                                            aria-describedby="nameHelp" placeholder="Enter Name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="EditInputTel">Tel</label>
+                                        <input v-model="editItems.data.tel" type="text" value="" class="form-control"
+                                            placeholder="Enter Tel">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="EditInputEmail">Email</label>
+                                        <input v-model="editItems.data.email" type="text" value="" class="form-control"
+                                            placeholder="Enter email">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" data-dismiss="modal" @click="editSubmit(editItems.data.id)">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    </div>
+
+</div>
+</template>
+
+<script>
+export default {
+  name: "",
+  props: {},
+  data: function() {
+    // 資料
+    return {
+      addItems: {
+        data: {
+          name:'',
+          tel:'',
+          email:'',
+        }
+      },
+      editItems: {
+        data: {
+          id: '',
+          name:'',
+          tel:'',
+          email:'',
+        }
+      },
+      items: [
+        {
+          id: '1',
+          name: '王小明',
+          tel: '093467889',
+          email: 'wang123@gamil.com',
+        }
+      ],
+      src: "" //追蹤 store用
+    };
+  },
+  watch: {
+    //監聽值
+  },
+  computed: {
+    //相依的資料改變時才做計算方法
+  },
+  methods: {
+    // 初始
+
+    // 新增鈕
+    addBtn() {
+      this.addItems.data.name = '',
+      this.addItems.data.tel = '',
+      this.addItems.data.email = ''
+    },
+    // 新增完成
+    submitBtn() {
+      this.items.push({
+        id: this.items.length +1,
+        name: this.addItems.data.name,
+        tel: this.addItems.data.tel,
+        email: this.addItems.data.email,
+      });
+    },
+    
+    // 編輯鈕 編輯頁input顯示新增的資料
+    editBtn(id) { //取到點擊items.id的值
+      this.items.forEach(el => {
+        if(id === el.id) {
+          this.editItems.data.id = el.id
+          this.editItems.data.name = el.name
+          this.editItems.data.tel = el.tel
+          this.editItems.data.email = el.email
+          // console.log('>>',id)
+        }
+      })
+    },
+    // 編輯完成
+    editSubmit(id) {
+      // console.log(this.items)
+      // console.log('id:',this.id)
+      this.items.forEach((el,i) => { //i是位置
+         if(id !== el.id) return ;
+        //  if(id === el.id) {
+          this.items[i].name = this.editItems.data.name //i取得第幾個
+          this.items[i].tel = this.editItems.data.tel
+          this.items[i].email = this.editItems.data.email
+         console.log('>>',el,i)
+        //  }
+      });
+    },
+    // 刪除鈕
+    deleteBtn: function (i) {
+      this.items.splice(i,1)
+      },
+    },
+  //BEGIN--生命週期
+  beforeCreate: function() {
+    //實體初始化
+  },
+  created: function() {
+    //實體建立完成。資料 $data 已可取得，但 $el 屬性還未被建立。
+  },
+  beforeMount: function() {
+    //執行元素掛載之前。
+  },
+  mounted: function() {
+    //元素已掛載， $el 被建立。
+  },
+  beforeUpdate: function() {
+    //當資料變化時被呼叫，還不會描繪 View。
+  },
+  updated: function() {
+    //當資料變化時被呼叫，還不會描繪 View。
+  },
+  beforeDestroy: function() {
+    //實體還可使用。
+  },
+  destroyed: function() {
+    //實體銷毀。
+  }
+  //END--生命週期
+};
+</script>
+
+<style lang="scss" scoped>
+</style>
