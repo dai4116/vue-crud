@@ -151,51 +151,100 @@ export default {
 
     // 新增鈕
     addBtn() {
+      $.ajax({
+        url: "http://127.0.0.1:880/api/list.php",
+        type: "GET",
+        data: {}
+      });
       this.addItems.data.name = '',
       this.addItems.data.tel = '',
       this.addItems.data.email = ''
     },
     // 新增完成
     submitBtn() {
-      this.items.push({
-        id: this.items.length +1,
+      var data = {
         name: this.addItems.data.name,
         tel: this.addItems.data.tel,
-        email: this.addItems.data.email,
+        email: this.addItems.data.email
+      };
+      $.ajax({
+        url: "http://127.0.0.1:880/api/add.php",
+        type: "POST",
+        data: data,
+        success: function() {
+          alert("新增完成");
+        }
+      });
+      this.items.push({
+        id: this.items.length + 1,
+        name: this.addItems.data.name,
+        tel: this.addItems.data.tel,
+        email: this.addItems.data.email
       });
     },
-    
+
     // 編輯鈕 編輯頁input顯示新增的資料
-    editBtn(id) { //取到點擊items.id的值
+    editBtn(id) {
+      //取到點擊items.id的值
+
       this.items.forEach(el => {
-        if(id === el.id) {
-          this.editItems.data.id = el.id
-          this.editItems.data.name = el.name
-          this.editItems.data.tel = el.tel
-          this.editItems.data.email = el.email
+        if (id === el.id) {
+          this.editItems.data.id = el.id;
+          this.editItems.data.name = el.name;
+          this.editItems.data.tel = el.tel;
+          this.editItems.data.email = el.email;
           // console.log('>>',id)
         }
-      })
+      });
     },
     // 編輯完成
     editSubmit(id) {
       // console.log(this.items)
       // console.log('id:',this.id)
-      this.items.forEach((el,i) => { //i是位置
-         if(id !== el.id) return ;
+      this.items.forEach((el, i) => {
+        //i是位置
+        if (id !== el.id) return;
         //  if(id === el.id) {
-          this.items[i].name = this.editItems.data.name //i取得第幾個
-          this.items[i].tel = this.editItems.data.tel
-          this.items[i].email = this.editItems.data.email
-         console.log('>>',el,i)
+        this.items[i].name = this.editItems.data.name; //i取得第幾個
+        this.items[i].tel = this.editItems.data.tel;
+        this.items[i].email = this.editItems.data.email;
+        console.log(">>", el, i);
         //  }
+      });
+      var data = {
+        id: this.editItems.data.id,
+        name: this.editItems.data.name,
+        tel: this.editItems.data.tel,
+        email: this.editItems.data.email
+      };
+      $.ajax({
+        url: "http://127.0.0.1:880/api/update.php",
+        type: "POST",
+        data: data,
+        success: function() {
+          //var a = JSON.parse(result);
+          //console.log('>>',a.code)
+          alert("編輯完成");
+        }
       });
     },
     // 刪除鈕
-    deleteBtn: function (i) {
-      this.items.splice(i,1)
-      },
-    },
+    deleteBtn: function(i) {
+      var data = {
+        id: this.items.id
+      }
+      $.ajax({
+        url: "http://127.0.0.1:880/api/del.php",
+        type: 'POST',
+        data: data,
+        success: function(){
+          //var a = JSON.parse(result);
+          alert("刪除成功")
+        }
+      })
+      this.items.splice(i, 1);
+    }
+  },
   //BEGIN--生命週期
   beforeCreate: function() {
     //實體初始化
@@ -208,15 +257,15 @@ export default {
   },
   mounted: function() {
     //元素已掛載， $el 被建立。
-     $.ajax({
-                url: "http://127.0.0.1:880/api/list.php",
-                type: 'GET',
-                data: {},
-                success: (result)=>{
-                  console.log(result)
-                    alert("ok")
-                }
-            })
+    $.ajax({
+      url: "http://127.0.0.1:880/api/list.php",
+      type: "GET",
+      data: {},
+      success: result => {
+        console.log(result);
+        alert("ok");
+      }
+    });
   },
   beforeUpdate: function() {
     //當資料變化時被呼叫，還不會描繪 View。
