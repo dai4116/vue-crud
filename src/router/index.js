@@ -22,6 +22,11 @@ Vue.use(VueRouter)
     path: '/crud',
     name: 'crud',
     component: () => import('../views/crud.vue')
+  },
+  {
+    path: '/crud-api',
+    name: 'crud-api',
+    component: () => import('../views/crud-api.vue')
   }
 ]
 

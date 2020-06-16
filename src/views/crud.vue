@@ -51,11 +51,10 @@
             </thead>
             <tbody id="contacts">
                 <tr v-for="(item, i) in items" :key="i"> <!-- key是陣列索引位置 -->
-               
-                    <th>{{ item[0] }}</th>
-                    <td class="name">{{ item[1] }}</td>
-                    <td class="tel">{{ item[2] }}</td>
-                    <td class="email">{{ item[3] }}</td>
+                    <th>{{ item.id }}</th>
+                    <td class="name">{{ item.name }}</td>
+                    <td class="tel">{{ item.tel }}</td>
+                    <td class="email">{{ item.email }}</td>
                     <td>
                         <button type="button" class="btn btn-primary btn-sm mr-2" data-toggle="modal"
                             data-target="#editModal" @click="editBtn(item.id)">Edit</button>
@@ -108,7 +107,7 @@
 
 <script>
 import $ from 'jquery';
-import axios from 'axios';
+
 export default {
   name: "",
   props: {},
@@ -130,7 +129,14 @@ export default {
           email:'',
         }
       },
-      items: [],
+      items: [
+        {
+          id: '1',
+          name: '王小明',
+          tel: '093467889',
+          email: 'wang123@gamil.com',
+        }
+      ],
       src: "" //追蹤 store用
     };
   },
@@ -156,35 +162,25 @@ export default {
     },
     // 新增完成
     submitBtn() {
-      // var data = {
-      //   name: this.addItems.data.name,
-      //   tel: this.addItems.data.tel,
-      //   email: this.addItems.data.email
-      // };
-      // $.ajax({
-      //   url: "http://127.0.0.1:880/api/add.php",
-      //   type: "POST",
-      //   data: data,
-      //   success: function() {
-      //     alert("新增完成");
-      //   }
-      // });
-      
-       axios.post('http://127.0.0.1:880/api/add.php',{
-          name: this.addItems.data.name,
-          tel: this.addItems.data.tel,
-          email: this.addItems.data.email,
-        })
-        .then((res) => {
-          console.log(res)
-          this.items.push(res.data)
-        })
-      // this.items.push({
-      //   id: this.items.length + 1,
-      //   name: this.addItems.data.name,
-      //   tel: this.addItems.data.tel,
-      //   email: this.addItems.data.email
-      // });
+      var data = {
+        name: this.addItems.data.name,
+        tel: this.addItems.data.tel,
+        email: this.addItems.data.email
+      };
+      $.ajax({
+        url: "http://127.0.0.1:880/api/add.php",
+        type: "POST",
+        data: data,
+        success: function() {
+          alert("新增完成");
+        }
+      });
+      this.items.push({
+        id: this.items.length + 1,
+        name: this.addItems.data.name,
+        tel: this.addItems.data.tel,
+        email: this.addItems.data.email
+      });
     },
 
     // 編輯鈕 編輯頁input顯示新增的資料
@@ -261,19 +257,15 @@ export default {
   },
   mounted: function() {
     //元素已掛載， $el 被建立。
-    // $.ajax({
-    //   url: "http://127.0.0.1:880/api/list.php",
-    //   type: "GET",
-    //   data: {},
-    //   success: result => {
-    //     console.log(result);
-    //     alert("ok");
-    //   }
-    // });
-    axios.get('http://127.0.0.1:880/api/list.php').then((res) => {
-        this.items = res.data.data
-        console.log('>>',res.data)
-      })
+    $.ajax({
+      url: "http://127.0.0.1:880/api/list.php",
+      type: "GET",
+      data: {},
+      success: result => {
+        console.log(result);
+        alert("ok");
+      }
+    });
   },
   beforeUpdate: function() {
     //當資料變化時被呼叫，還不會描繪 View。

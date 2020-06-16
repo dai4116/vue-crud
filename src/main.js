@@ -4,10 +4,6 @@ import router from './router'
 import store from './store'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.min'
-// import axios from 'axios';
-// Vue.prototype.$axios = axios;
-
-
 
 Vue.config.productionTip = false
 
