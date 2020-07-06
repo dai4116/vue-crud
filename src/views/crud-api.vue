@@ -157,7 +157,6 @@
         itemsAll: [], //新的全部的資料 select用
         selected: "",
         checkname: [],
-        checkAll: false,
         addSelected: "",
         editSelected: "",
         checkData: [{
@@ -207,39 +206,69 @@
       // },
       'checkname'(val) {
         var checkItem = []
-        //   this.itemsAll.forEach(el => {
-        //     if (val) {
-        //   //  console.log(el)
-        //     checknewItem.push(el)
-        //     }
-        //   this.items = checknewItem
-        // });
-        // console.log(this.itemsAll, 'this.itemsAll >>>')
         val.forEach(el => {
           this.itemsAll.forEach(el2 => {
             if (el.value === el2[3]) {
               checkItem.push(el2)
             }
-        console.log(el2)
-
+            // console.log(el2)
           });
         })
         this.items = checkItem
       },
-      'checkAll'(val) {
-        console.log(val)
-        if (val === true) {
-          this.items = this.itemsAll
-        }else {
-          this.items = []
-        }
-      }
+      // 'checkAll'(val) {
+      //   console.log(val)
+      //   if (val === true) {
+      //     this.items = this.itemsAll
+      //   } else {
+      //     this.items = []
+      //   }
+      // }
     },
     computed: {
       //相依的資料改變時才做計算方法
+      //參考 https://jsfiddle.net/littlebookboy/q5gLww88/
+      //全選
+      // 綁定在全選的 checkbox 的名稱
+      // 1. 頁面讀取時會觸發 get 取回被綁定的物件應屬於什麼值（這邊就是看你要預設全選還是不全選）
+      // 2. 當勾選時會變動值，觸發 computed 執行重算
+      checkAll: {
+        get: function () {
+          // 當「已經打勾的選項」跟「可以打勾的選項」一樣多，把全選的值修正成 true or false
+          // 下面這個判斷是說，當「可以用來打勾的選項」this.checkData 是存在的話
+          // ？ 回傳（「已經打勾的選項」this.checkname.length 跟「可以打勾的選項」this.checkData.length 一樣多嗎）
+          // ： 否則回傳 false （不存在可以打勾的選項）
+          return this.checkData ? this.checkname.length === this.checkData.length : false
+        },
+        // 當 v-model 觸發 狀態改變，執行 set 
+        set: function (value) {
+          console.log(value)
+          // value 是 v-model 在全選 checkbox 上的勾選狀態，打勾時為 true
+          // 暫存用陣列，用來存放被打勾的 checkbox value
+          let selected = []
+          // 如果全選打勾
+          if (value) {
+            // 把可以勾的 checkbox dom 跑一輪
+            this.checkData.forEach((action) => {
+              // 寫入暫存陣列
+              selected.push(action)
+            })
+          }
+          // 將暫存陣列的值寫到已經勾選的容器陣列，表示全都勾（true），false 時會被清空
+          this.checkname = selected
+          console.log(">>>", checkname)
+        }
+      }
     },
     methods: {
       // 初始
+      //撈整筆資料
+      getList: function () {
+        axios.get("http://127.0.0.1:880/api/list.php").then(res => {
+          this.items = res.data.data;
+          this.itemsAll = res.data.data;
+        });
+      },
 
       // 新增鈕
       addBtn() {
@@ -315,44 +344,7 @@
         });
       },
 
-      //撈整筆資料
-      getList: function () {
-        axios.get("http://127.0.0.1:880/api/list.php").then(res => {
-          this.items = res.data.data;
-          this.itemsAll = res.data.data;
-        });
-      },
 
-
-      // checkItem:function(event,item) {
-      //   console.log(event,item)
-      // console.log(item.value)
-      // var checknewItem = []
-
-      //   this.itemsAll.forEach(el => {
-      //     if (event.target.checked === true && item.value === el[3]) {
-      //   //  console.log(el)
-      //     checknewItem.push(el)
-      //     }else if(item.value === el[3]){
-
-      //     this.checkname=[];
-      //     checknewItem.push(el)
-
-      //     }
-      //   this.items = checknewItem
-      // });
-
-      // }
-      // if (item.checked == true)  {
-      // }
-      // this.itemsAll.forEach(el => {
-      //   //  console.log(el)
-      //   if (item.value === el[3]) {
-      //     newItems.push(el)
-      //   }
-      //   this.items = newItems
-      // });
-      // }
     },
     //BEGIN--生命週期
     beforeCreate: function () {
