@@ -256,7 +256,6 @@
           }
           // 將暫存陣列的值寫到已經勾選的容器陣列，表示全都勾（true），false 時會被清空
           this.checkname = selected
-          console.log(">>>", checkname)
         }
       }
     },
