@@ -45,7 +45,7 @@
                   <input v-model="addItems.data.tel" type="text" value class="form-control" placeholder="Enter Tel" />
                 </div>
                 <div class="form-group">
-                  <label for="addInputEmail">Email</label>
+                  <label for="addInputCity">City</label>
                   <select v-model="addSelected" class="form-control addSelect">
                     <option value="" disabled>--請選擇--</option>
                     <option :value="item" v-for="(item,i) in selectData" :key="i">{{ item.text }}</option>
@@ -77,7 +77,7 @@
             <th>{{ item[0] }}</th>
             <td class="name">{{ item[1] }}</td>
             <td class="tel">{{ item[2] }}</td>
-            <td class="email">{{ item[3] }}</td>
+            <td class="city">{{ item[3] }}</td>
             <td>
               <button type="button" class="btn btn-primary btn-sm mr-2" data-toggle="modal" data-target="#editModal"
                 @click="editBtn(item[0])">Edit</button>
@@ -109,7 +109,7 @@
                   <input v-model="editItems.data.tel" type="text" value class="form-control" placeholder="Enter Tel" />
                 </div>
                 <div class="form-group">
-                  <label for="EditInputEmail">Email</label>
+                  <label for="EditInputCity">City</label>
                   <select v-model="editSelected" class="form-control addSelect">
                     <option value="" disabled>--請選擇--</option>
                     <option :value="item" v-for="(item,i) in selectData" :key="i">{{ item.text }}</option>
@@ -283,7 +283,7 @@
         let data = qs.stringify({
           name: this.addItems.data.name,
           tel: this.addItems.data.tel,
-          email: this.addSelected.value
+          city: this.addSelected.value
         });
         axios.post("http://127.0.0.1:880/api/add.php", data).then(res => {
           console.log(res.data);
@@ -300,7 +300,7 @@
             this.editItems.data.id = el[0];
             this.editItems.data.name = el[1];
             this.editItems.data.tel = el[2];
-            this.editItems.data.email = el[3];
+            this.editItems.data.city = el[3];
             //console.log("==>>", this.editItems);
           }
         });
@@ -311,7 +311,7 @@
           id: id,
           name: this.editItems.data.name,
           tel: this.editItems.data.tel,
-          email: this.editSelected.value
+          city: this.editSelected.value
         });
         axios.post("http://127.0.0.1:880/api/update.php", data).then(res => {
           console.log(res);
